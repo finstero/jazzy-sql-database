@@ -22,8 +22,6 @@ pool.on('error', (error) => {
 });
 
 
-
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('server/public'));
 
@@ -70,13 +68,29 @@ const songList = [
 
 app.get('/artist', (req, res) => {
     console.log(`In /songs GET`);
-    res.send(artistList);
+
+    const queryText = `SELECT * FROM "artist" ORDER BY "id" DESC;`
+    // res.send(artistList);
+    pool.query(queryText)
+    .then( (result) => {
+        console.log(result.rows);
+        res.send(result.rows);
+    }).catch ( (err) => {
+        console.log(err);
+        res.sendStatus(500);
+    })
 });
+
+
 
 app.post('/artist', (req, res) => {
     artistList.push(req.body);
     res.sendStatus(201);
 });
+
+
+
+
 
 app.get('/song', (req, res) => {
     console.log(`In /songs GET`);
