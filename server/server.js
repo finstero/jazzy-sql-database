@@ -84,8 +84,21 @@ app.get('/artist', (req, res) => {
 
 
 app.post('/artist', (req, res) => {
-    artistList.push(req.body);
-    res.sendStatus(201);
+    // artistList.push(req.body);
+    // res.sendStatus(201);
+    let queryText = `INSERT INTO "artist" ("name", "birthdate")
+    VALUES ($1, $2);`
+
+    let values = [req.body.name, req.body.birthdate];
+
+    pool.query(queryText, values)
+    .then ( (result) => {
+        res.sendStatus(201);
+    }).catch ( err => {
+        console.log(err);
+        res.sendStatus(500);
+    });
+
 });
 
 
